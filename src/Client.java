@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ class Client {
     private static final String host = "localhost";
 
     public void start(String host, int port) {
+
         try {
             Socket socket = new Socket(host, port);
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -21,9 +23,12 @@ class Client {
             BufferedReader serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.print("Create your nickname: ");
 
+            ClientUI ui = new ClientUI();
+
             Thread inputThread = new Thread(() -> {
                 try {
                     String input;
+
                     while ((input = reader.readLine()) != null) {
                         writer.println(input);
                         if (input.equalsIgnoreCase("exit")) {
@@ -40,6 +45,7 @@ class Client {
                     String serverResponse;
                     while ((serverResponse = serverReader.readLine()) != null) {
                         System.out.println(serverResponse);
+                        sendMessageToUI(serverResponse, ui);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -59,6 +65,14 @@ class Client {
 
     public static void main(String[] args) {
         new Client().start(host, 1337);
+    }
+
+    public void recieveMessageFromUI(){
+        // TODO: 08.12.2023  
+    }
+    
+    public void sendMessageToUI(String message, ClientUI ui) {
+        ui.printOutput(message);
     }
 
 }
